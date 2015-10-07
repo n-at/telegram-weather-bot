@@ -18,6 +18,8 @@ public class BotProperties {
     private String telegramBotToken = "";
     private String openWeatherMapApiKey = "";
 
+    private long pollInterval = 5000;
+
     private BotProperties() {
         logger.info("Loading bot properties...");
 
@@ -36,6 +38,13 @@ public class BotProperties {
             if(openWeatherMapApiKey == null) {
                 logger.warn("No OpenWeatherMap API key found!");
                 openWeatherMapApiKey = "";
+            }
+
+            try {
+                pollInterval = Long.parseLong(properties.getProperty("pollInterval"));
+            } catch (Exception e) {
+                logger.error("Malformed poll interval");
+                pollInterval = 5000;
             }
 
         } catch(IOException e) {
@@ -59,5 +68,9 @@ public class BotProperties {
 
     public String getOpenWeatherMapApiKey() {
         return openWeatherMapApiKey;
+    }
+
+    public long getPollInterval() {
+        return pollInterval;
     }
 }

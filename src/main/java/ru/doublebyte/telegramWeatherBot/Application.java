@@ -8,11 +8,22 @@ public class Application {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
-        logger.info("Testing...");
-
         BotProperties properties = BotProperties.getInstance();
-        logger.info("Telegram token: " + properties.getTelegramBotToken());
-        logger.info("OpenWeatherMap api key: " + properties.getOpenWeatherMapApiKey());
+        WeatherBot bot = new WeatherBot(properties.getTelegramBotToken(),
+                properties.getOpenWeatherMapApiKey());
+
+        while(true) {
+            logger.info("Polling...");
+
+            bot.getMe();
+
+            try {
+                Thread.sleep(properties.getPollInterval());
+            } catch(InterruptedException e) {
+                logger.error("Bot thread interrupted", e);
+                break;
+            }
+        }
     }
 
 }
