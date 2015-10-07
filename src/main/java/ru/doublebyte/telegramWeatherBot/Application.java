@@ -9,6 +9,10 @@ public class Application {
 
     public static void main(String[] args) {
         logger.info("Testing...");
+
+        BotProperties properties = BotProperties.getInstance();
+        logger.info("Telegram token: " + properties.getTelegramBotToken());
+        logger.info("OpenWeatherMap api key: " + properties.getOpenWeatherMapApiKey());
     }
 
 }
