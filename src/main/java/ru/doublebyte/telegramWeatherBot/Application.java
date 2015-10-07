@@ -2,6 +2,7 @@ package ru.doublebyte.telegramWeatherBot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.doublebyte.telegramWeatherBot.types.User;
 
 public class Application {
 
@@ -13,9 +14,13 @@ public class Application {
                 properties.getOpenWeatherMapApiKey());
 
         while(true) {
-            logger.info("Polling...");
-
-            bot.getMe();
+            User user = bot.getMe();
+            logger.info("I am:");
+            logger.info("id: " + user.getId());
+            logger.info("first_name: " + user.getFirstName());
+            logger.info("last_name: " + user.getLastName());
+            logger.info("user_name: " + user.getUserName());
+            logger.info("-------------------");
 
             try {
                 Thread.sleep(properties.getPollInterval());

@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.telegramWeatherBot.enums.RequestType;
+import ru.doublebyte.telegramWeatherBot.types.User;
+import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,24 +27,18 @@ public class Bot {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Prints bot info
-     * TODO return struct
+     * Get bot user info
      */
-    public void getMe() {
+    public User getMe() {
         JSONObject me = makeRequest(RequestType.getMe);
-        logger.info("I am:");
-        logger.info("id: " + me.getInt("id"));
-        logger.info("first_name: " + me.getString("first_name"));
+        User user = JsonUtil.toObject(me, User.class);
 
-        if(me.has("last_name")) {
-            logger.info("last_name: " + me.getString("last_name"));
+        if(user == null) {
+            logger.warn("Cannot get bot user info!");
+            return new User();
         }
 
-        if(me.has("user_name")) {
-            logger.info("user_name: " + me.getString("username"));
-        }
-
-        logger.info("-------------------");
+        return user;
     }
 
     ///////////////////////////////////////////////////////////////////////////
