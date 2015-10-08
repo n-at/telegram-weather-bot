@@ -2,7 +2,6 @@ package ru.doublebyte.telegramWeatherBot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.doublebyte.telegramWeatherBot.types.User;
 
 public class Application {
 
@@ -15,17 +14,7 @@ public class Application {
 
         while(true) {
 
-            try {
-                User user = bot.getMe();
-                logger.info("I am:");
-                logger.info("id: " + user.getId());
-                logger.info("first_name: " + user.getFirstName());
-                logger.info("last_name: " + user.getLastName());
-                logger.info("user_name: " + user.getUserName());
-                logger.info("-------------------");
-            } catch(Exception e) {
-                logger.error("Cannot get bot info", e);
-            }
+            bot.handleRequests();
 
             try {
                 Thread.sleep(properties.getPollInterval());

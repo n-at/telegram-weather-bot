@@ -23,6 +23,9 @@ public class UserOrChat {
     @JsonProperty("username")
     private String userName;
 
+    @JsonProperty("type")
+    private String type;
+
     public UserOrChat() {
 
     }
@@ -99,5 +102,13 @@ public class UserOrChat {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -2,6 +2,9 @@ package ru.doublebyte.telegramWeatherBot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.doublebyte.telegramWeatherBot.types.Message;
+
+import java.util.List;
 
 /**
  * Weather bot class
@@ -19,7 +22,21 @@ public class WeatherBot extends Bot {
 
     ///////////////////////////////////////////////////////////////////////////
 
-    //TODO do something useful
+    /**
+     * Handle users requests
+     */
+    public void handleRequests() {
+        List<Message> updates = getUpdates();
+
+        logger.info("Got " + updates.size() + " update(s)");
+
+        for(Message message: updates) {
+            logger.info(String.format("Message id=%s, from=%s, text=%s",
+                    message.getMessageId(),
+                    message.getFrom().getFirstName(),
+                    message.getText()));
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 
