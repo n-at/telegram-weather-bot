@@ -24,6 +24,11 @@ public class User {
 
     }
 
+    @Override
+    public String toString() {
+        return String.format("User[%s %s (%s), id:%d]", firstName, lastName, userName, id);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
     public int getId() {

@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.doublebyte.telegramWeatherBot.enums.ParseMode;
 import ru.doublebyte.telegramWeatherBot.enums.RequestType;
 import ru.doublebyte.telegramWeatherBot.types.Message;
 import ru.doublebyte.telegramWeatherBot.types.Update;
@@ -51,12 +52,12 @@ public class Bot {
     /**
      * Get bot user info
      */
-    public User getMe() throws Exception {
+    protected User getMe() throws Exception {
         JSONObject me = makeRequest(RequestType.getMe);
         User user = JsonUtil.toObject(me, User.class);
 
         if(user == null) {
-            throw new Exception("Cannot get bot user info");
+            throw new Exception("Cannot parse bot user info");
         }
 
         return user;
@@ -68,6 +69,58 @@ public class Bot {
      */
     protected List<Message> getUpdates() {
         return getUpdates(maxUpdateId + 1, updateLimit, updateTimeout);
+    }
+
+    /**
+     * Send message to user or group
+     * @param chatId int Identifier of user or group
+     * @param text String Message text
+     * @return Message Message object sent to server
+     * @throws Exception
+     */
+    protected Message sendMessage(int chatId, String text) throws Exception{
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("text", text);
+        return sendMessage(query);
+    }
+
+    /**
+     * Send message to user or group as reply to other message
+     * @param chatId int Identifier of user or group
+     * @param text String Message text
+     * @param replyToMessageId int Identifier of message to reply
+     * @return Message Message object sent to server
+     * @throws Exception
+     */
+    protected Message sendMessage(int chatId, String text, int replyToMessageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("text", text);
+        query.put("reply_to_message_id", replyToMessageId);
+        return sendMessage(query);
+    }
+
+    /**
+     * Send message to user or group
+     * @param chatId int Identifier of user or group
+     * @param text String Message text
+     * @param parseMode ParseMode for markdown
+     * @param disableWebPagePreview boolean
+     * @param replyToMessageId int Identifier of message to reply
+     * @return Message Message object sent to server
+     * @throws Exception
+     */
+    protected Message sendMessage(int chatId, String text, ParseMode parseMode,
+                                  boolean disableWebPagePreview, int replyToMessageId) throws Exception {
+
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("text", text);
+        query.put("parse_mode", parseMode.toString());
+        query.put("disable_web_page_preview", disableWebPagePreview);
+        query.put("reply_to_message_id", replyToMessageId);
+        return sendMessage(query);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -142,6 +195,10 @@ public class Bot {
                     continue;
                 }
 
+                if(update.getMessage() == null) {
+                    continue;
+                }
+
                 maxUpdateId = Math.max(maxUpdateId, update.getUpdateId());
 
                 updates.add(update.getMessage());
@@ -152,6 +209,23 @@ public class Bot {
             logger.error("Failed to get updates", e);
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Send message to user or group described by given parameters
+     * @param query Map message parameters
+     * @return Message
+     * @throws Exception
+     */
+    private Message sendMessage(Map<String, Object> query) throws Exception {
+        JSONObject messageObject = makeRequest(RequestType.sendMessage, query);
+        Message message = JsonUtil.toObject(messageObject, Message.class);
+
+        if(message == null) {
+            throw new Exception("Cannot parse sent message");
+        }
+
+        return message;
     }
 
     ///////////////////////////////////////////////////////////////////////////

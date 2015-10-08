@@ -3,6 +3,7 @@ package ru.doublebyte.telegramWeatherBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.telegramWeatherBot.types.Message;
+import ru.doublebyte.telegramWeatherBot.types.User;
 
 import java.util.List;
 
@@ -31,10 +32,19 @@ public class WeatherBot extends Bot {
         logger.info("Got " + updates.size() + " update(s)");
 
         for(Message message: updates) {
+            User from = message.getFrom();
+
             logger.info(String.format("Message id=%s, from=%s, text=%s",
                     message.getMessageId(),
-                    message.getFrom().getFirstName(),
+                    from.toString(),
                     message.getText()));
+
+            try {
+                int userId = message.getFrom().getId();
+                sendMessage(userId, "Got your message, " + from.toString());
+            } catch (Exception e) {
+                logger.error("Cannot send message to " + from.toString());
+            }
         }
     }
 
