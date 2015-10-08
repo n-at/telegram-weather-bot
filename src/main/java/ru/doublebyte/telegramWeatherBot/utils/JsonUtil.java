@@ -12,7 +12,7 @@ public class JsonUtil {
 
     /**
      * Convert Json object to class instance
-     * @param object JSONObject
+     * @param object Json object to convert
      * @param cls Class
      * @param <T> Some class
      * @return T

@@ -53,6 +53,7 @@ public class Bot {
 
     /**
      * Get bot user info
+     * @return Bot user info
      */
     protected User getMe() throws Exception {
         JSONObject me = makeRequest(RequestType.getMe);
@@ -67,7 +68,7 @@ public class Bot {
 
     /**
      * Get all available updates
-     * @return List
+     * @return Arary of updates
      */
     protected List<Message> getUpdates() {
         return getUpdates(maxUpdateId + 1, updateLimit, updateTimeout);
@@ -75,9 +76,9 @@ public class Bot {
 
     /**
      * Send message to user or group
-     * @param chatId int Identifier of user or group
-     * @param text String Message text
-     * @return Message Message object sent to server
+     * @param chatId Identifier of user or group
+     * @param text Message text
+     * @return Message object sent to server
      * @throws Exception
      */
     protected Message sendMessage(int chatId, String text) throws Exception{
@@ -89,10 +90,10 @@ public class Bot {
 
     /**
      * Send message to user or group as reply to other message
-     * @param chatId int Identifier of user or group
-     * @param text String Message text
-     * @param replyToMessageId int Identifier of message to reply
-     * @return Message Message object sent to server
+     * @param chatId Identifier of user or group
+     * @param text Message text
+     * @param replyToMessageId Identifier of message to reply
+     * @return Message object sent to server
      * @throws Exception
      */
     protected Message sendMessage(int chatId, String text, int replyToMessageId) throws Exception {
@@ -105,12 +106,12 @@ public class Bot {
 
     /**
      * Send message to user or group
-     * @param chatId int Identifier of user or group
-     * @param text String Message text
-     * @param parseMode ParseMode for markdown
-     * @param disableWebPagePreview boolean
-     * @param replyToMessageId int Identifier of message to reply
-     * @return Message Message object sent to server
+     * @param chatId Identifier of user or group
+     * @param text Message text
+     * @param parseMode Parse mode for markdown
+     * @param disableWebPagePreview Disables link previews for links in this message
+     * @param replyToMessageId Identifier of message to reply
+     * @return Message object sent to server
      * @throws Exception
      */
     protected Message sendMessage(int chatId, String text, ParseMode parseMode,
@@ -127,10 +128,10 @@ public class Bot {
 
     /**
      * Forward any message
-     * @param chatId int Message recipient
-     * @param fromChatId int Chat where the original message was sent
-     * @param messageId int Message identifier
-     * @return Message Message object sent
+     * @param chatId Message recipient
+     * @param fromChatId Chat where the original message was sent
+     * @param messageId Message identifier
+     * @return Message object sent
      * @throws Exception
      */
     protected Message forwardMessage(int chatId, int fromChatId, int messageId) throws Exception {
@@ -151,8 +152,8 @@ public class Bot {
 
     /**
      * Send chat action
-     * @param chatId int Recipient
-     * @param action String Action
+     * @param chatId Recipient
+     * @param action Action name
      * @throws Exception
      */
     protected void sendChatAction(int chatId, ChatAction action) throws Exception {
@@ -194,8 +195,8 @@ public class Bot {
 
     /**
      * Make request to telegram bot api
-     * @param requestType RequestType
-     * @return JSONObject
+     * @param requestType Type of request
+     * @return Request result
      */
     private JSONObject makeRequest(RequestType requestType, Map<String, Object> parameters) {
         try {
@@ -222,8 +223,8 @@ public class Bot {
 
     /**
      * Make api request without parameters
-     * @param requestType RequestType
-     * @return JSONObject
+     * @param requestType Type of request
+     * @return Request result
      */
     private JSONObject makeRequest(RequestType requestType) {
         return makeRequest(requestType, new HashMap<>());
@@ -231,7 +232,7 @@ public class Bot {
 
     /**
      * Get updates from Telegram
-     * @return List
+     * @return Array of updates
      */
     private List<Message> getUpdates(int offset, int limit, int timeout) {
         try {
@@ -280,8 +281,8 @@ public class Bot {
 
     /**
      * Send message to user or group described by given parameters
-     * @param query Map message parameters
-     * @return Message
+     * @param query Message parameters
+     * @return Message sent to server
      * @throws Exception
      */
     private Message sendMessage(Map<String, Object> query) throws Exception {
