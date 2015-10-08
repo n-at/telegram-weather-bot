@@ -12,6 +12,9 @@ public class Application {
         WeatherBot bot = new WeatherBot(properties.getTelegramBotToken(),
                 properties.getOpenWeatherMapApiKey());
 
+        bot.setLanguage(properties.getLanguage());
+        bot.setUnits(properties.getUnits());
+
         while(true) {
 
             bot.handleRequests();
