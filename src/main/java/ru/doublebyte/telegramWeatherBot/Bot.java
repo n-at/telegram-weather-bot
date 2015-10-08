@@ -68,7 +68,7 @@ public class Bot {
 
     /**
      * Get all available updates
-     * @return Arary of updates
+     * @return Array of updates
      */
     protected List<Message> getUpdates() {
         return getUpdates(maxUpdateId + 1, updateLimit, updateTimeout);
@@ -148,6 +148,39 @@ public class Bot {
         }
 
         return message;
+    }
+
+    /**
+     * Send location
+     * @param chatId Chat
+     * @param latitude Latitude
+     * @param longitude Longitude
+     * @return Message sent to server
+     */
+    protected Message sendLocation(int chatId, double latitude, double longitude) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("latitude", latitude);
+        query.put("longitude", longitude);
+        return sendLocation(query);
+    }
+
+    /**
+     * Send location as reply to a message
+     * @param chatId Chat
+     * @param latitude Latitude
+     * @param longitude Longitude
+     * @param replyToMessageId Message id to reply
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendLocation(int chatId, double latitude, double longitude, int replyToMessageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_it", chatId);
+        query.put("latitude", latitude);
+        query.put("longitude", longitude);
+        query.put("reply_to_message_id", replyToMessageId);
+        return sendLocation(query);
     }
 
     /**
@@ -287,6 +320,23 @@ public class Bot {
      */
     private Message sendMessage(Map<String, Object> query) throws Exception {
         JSONObject messageObject = makeRequest(RequestType.sendMessage, query);
+        Message message = JsonUtil.toObject(messageObject, Message.class);
+
+        if(message == null) {
+            throw new Exception("Cannot parse sent message");
+        }
+
+        return message;
+    }
+
+    /**
+     * Send location with given parameters
+     * @param query Query parameters
+     * @return Message sent to server
+     * @throws Exception
+     */
+    private Message sendLocation(Map<String, Object> query) throws Exception {
+        JSONObject messageObject = makeRequest(RequestType.sendLocation, query);
         Message message = JsonUtil.toObject(messageObject, Message.class);
 
         if(message == null) {
