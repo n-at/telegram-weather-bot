@@ -123,6 +123,30 @@ public class Bot {
         return sendMessage(query);
     }
 
+    /**
+     * Forward any message
+     * @param chatId int Message recipient
+     * @param fromChatId int Chat where the original message was sent
+     * @param messageId int Message identifier
+     * @return Message Message object sent
+     * @throws Exception
+     */
+    protected Message forwardMessage(int chatId, int fromChatId, int messageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("from_chat_id", fromChatId);
+        query.put("message_id", messageId);
+
+        JSONObject messageObject = makeRequest(RequestType.forwardMessage, query);
+        Message message = JsonUtil.toObject(messageObject, Message.class);
+
+        if(message == null) {
+            throw new Exception("Cannot parse sent message");
+        }
+
+        return message;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
     /**
