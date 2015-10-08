@@ -14,13 +14,18 @@ public class Application {
                 properties.getOpenWeatherMapApiKey());
 
         while(true) {
-            User user = bot.getMe();
-            logger.info("I am:");
-            logger.info("id: " + user.getId());
-            logger.info("first_name: " + user.getFirstName());
-            logger.info("last_name: " + user.getLastName());
-            logger.info("user_name: " + user.getUserName());
-            logger.info("-------------------");
+
+            try {
+                User user = bot.getMe();
+                logger.info("I am:");
+                logger.info("id: " + user.getId());
+                logger.info("first_name: " + user.getFirstName());
+                logger.info("last_name: " + user.getLastName());
+                logger.info("user_name: " + user.getUserName());
+                logger.info("-------------------");
+            } catch(Exception e) {
+                logger.error("Cannot get bot info", e);
+            }
 
             try {
                 Thread.sleep(properties.getPollInterval());

@@ -22,5 +22,8 @@ public class JsonUtilTest {
         assertEquals("John", user.getFirstName());
         assertEquals("Doe", user.getLastName());
         assertEquals("user", user.getUserName());
+
+        String string = JsonUtil.toObject(json, String.class);
+        assertNull(string);
     }
 }

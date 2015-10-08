@@ -29,13 +29,12 @@ public class Bot {
     /**
      * Get bot user info
      */
-    public User getMe() {
+    public User getMe() throws Exception {
         JSONObject me = makeRequest(RequestType.getMe);
         User user = JsonUtil.toObject(me, User.class);
 
         if(user == null) {
-            logger.warn("Cannot get bot user info!");
-            return new User();
+            throw new Exception("Cannot get bot user info");
         }
 
         return user;
