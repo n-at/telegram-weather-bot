@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.doublebyte.telegramWeatherBot.enums.ChatAction;
 import ru.doublebyte.telegramWeatherBot.enums.ParseMode;
 import ru.doublebyte.telegramWeatherBot.enums.RequestType;
 import ru.doublebyte.telegramWeatherBot.types.Message;
@@ -147,6 +148,19 @@ public class Bot {
         return message;
     }
 
+    /**
+     * Send chat action
+     * @param chatId int Recipient
+     * @param action String Action
+     * @throws Exception
+     */
+    protected void sendChatAction(int chatId, ChatAction action) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("action", action.toString());
+        makeRequest(RequestType.sendChatAction, query);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
     /**
@@ -170,7 +184,7 @@ public class Bot {
                 throw new Exception("Telegram API error: " + description);
             }
 
-            return result.getJSONObject("result");
+            return result.optJSONObject("result");
         } catch(Exception e) {
             logger.error("Failed to make request: " + requestType, e);
             return null;
