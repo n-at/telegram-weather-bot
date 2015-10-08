@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import ru.doublebyte.telegramWeatherBot.enums.ChatAction;
 import ru.doublebyte.telegramWeatherBot.enums.ParseMode;
 import ru.doublebyte.telegramWeatherBot.enums.RequestType;
-import ru.doublebyte.telegramWeatherBot.types.Message;
-import ru.doublebyte.telegramWeatherBot.types.Update;
-import ru.doublebyte.telegramWeatherBot.types.User;
-import ru.doublebyte.telegramWeatherBot.types.UserProfilePhotos;
+import ru.doublebyte.telegramWeatherBot.types.*;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 
 import java.util.ArrayList;
@@ -150,6 +147,13 @@ public class Bot {
         return message;
     }
 
+    //TODO sendPhoto
+    //TODO sendAudio
+    //TODO sendDocument
+    //TODO sendSticker
+    //TODO sendVideo
+    //TODO sendVoice
+
     /**
      * Send location
      * @param chatId Chat
@@ -224,6 +228,25 @@ public class Bot {
         return getUserProfilePhotos(query);
     }
 
+    /**
+     * Get file download info
+     * @param fileId File id
+     * @return File download info
+     */
+    protected File getFile(int fileId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("file_id", fileId);
+
+        JSONObject fileObject = makeRequest(RequestType.getFile, query);
+        File file = JsonUtil.toObject(fileObject, File.class);
+
+        if(file == null) {
+            throw new Exception("Cannot parse file");
+        }
+
+        return file;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
     /**
@@ -231,7 +254,7 @@ public class Bot {
      * @param requestType Type of request
      * @return Request result
      */
-    private JSONObject makeRequest(RequestType requestType, Map<String, Object> parameters) {
+    private JSONObject makeRequest(RequestType requestType, Map<String, Object> parameters) throws Exception {
         try {
             HttpResponse<JsonNode> response = Unirest.get(apiUrl)
                     .routeParam("token", token)
@@ -249,8 +272,8 @@ public class Bot {
 
             return result.optJSONObject("result");
         } catch(Exception e) {
-            logger.error("Failed to make request: " + requestType, e);
-            return null;
+            logger.error("Failed to make request: " + requestType);
+            throw e;
         }
     }
 
@@ -259,7 +282,7 @@ public class Bot {
      * @param requestType Type of request
      * @return Request result
      */
-    private JSONObject makeRequest(RequestType requestType) {
+    private JSONObject makeRequest(RequestType requestType) throws Exception {
         return makeRequest(requestType, new HashMap<>());
     }
 
