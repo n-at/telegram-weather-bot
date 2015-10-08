@@ -18,7 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Bot {
+/**
+ * Base class for telegram bots
+ */
+public abstract class Bot {
 
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
 
