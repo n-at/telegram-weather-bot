@@ -13,6 +13,7 @@ import ru.doublebyte.telegramWeatherBot.enums.RequestType;
 import ru.doublebyte.telegramWeatherBot.types.Message;
 import ru.doublebyte.telegramWeatherBot.types.Update;
 import ru.doublebyte.telegramWeatherBot.types.User;
+import ru.doublebyte.telegramWeatherBot.types.UserProfilePhotos;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 
 import java.util.ArrayList;
@@ -161,6 +162,34 @@ public class Bot {
         makeRequest(RequestType.sendChatAction, query);
     }
 
+    /**
+     * Get user profile photos
+     * @param userId User
+     * @return User profile photos description
+     * @throws Exception
+     */
+    protected UserProfilePhotos getUserProfilePhotos(int userId) throws Exception {
+        Map<String, Object> query =new HashMap<>();
+        query.put("user_id", userId);
+        return getUserProfilePhotos(query);
+    }
+
+    /**
+     * Get user profile photos
+     * @param userId User
+     * @param offset Sequential number of the first photo to be returned
+     * @param limit Limits the number of photos to be retrieved
+     * @return User profile photos description
+     * @throws Exception
+     */
+    protected UserProfilePhotos getUserProfilePhotos(int userId, int offset, int limit) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("user_id", userId);
+        query.put("offset", offset);
+        query.put("limit", limit);
+        return getUserProfilePhotos(query);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
     /**
@@ -264,6 +293,23 @@ public class Bot {
         }
 
         return message;
+    }
+
+    /**
+     * Get user profile photos with given parameters
+     * @param query Query parameters
+     * @return User profile photos description
+     * @throws Exception
+     */
+    private UserProfilePhotos getUserProfilePhotos(Map<String, Object> query) throws Exception {
+        JSONObject photosObject = makeRequest(RequestType.getUserProfilePhotos, query);
+        UserProfilePhotos photos = JsonUtil.toObject(photosObject, UserProfilePhotos.class);
+
+        if(photos == null) {
+            throw new Exception("Cannot parse user profile photos");
+        }
+
+        return photos;
     }
 
     ///////////////////////////////////////////////////////////////////////////
