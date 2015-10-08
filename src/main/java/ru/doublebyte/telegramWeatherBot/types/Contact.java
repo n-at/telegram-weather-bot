@@ -3,35 +3,35 @@ package ru.doublebyte.telegramWeatherBot.types;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * User type
- * https://core.telegram.org/bots/api#user
+ * This object represents a phone contact
+ * https://core.telegram.org/bots/api#contact
  */
-public class User {
+public class Contact {
 
-    @JsonProperty("id")
-    private int id;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 
     @JsonProperty("first_name")
-    private String firstName = "";
+    private String firstName;
 
     @JsonProperty("last_name")
-    private String lastName = "";
+    private String lastName;
 
-    @JsonProperty("username")
-    private String userName = "";
+    @JsonProperty("user_id")
+    private int userId;
 
-    public User() {
+    public Contact() {
 
     }
 
     ///////////////////////////////////////////////////////////////////////////
 
-    public int getId() {
-        return id;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getFirstName() {
@@ -50,11 +50,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getUserName() {
-        return userName;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
