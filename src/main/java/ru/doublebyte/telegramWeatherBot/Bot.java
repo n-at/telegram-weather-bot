@@ -176,12 +176,12 @@ public abstract class Bot {
      * Send photo file as reply to message
      * @param chatId Message recipient
      * @param photo Photo file
-     * @param caption Caption text. Not sent when null
      * @param replyToMessageId Message id to reply
+     * @param caption Caption text. Not sent when null
      * @return Message sent to server
      * @throws Exception
      */
-    protected Message sendPhoto(int chatId, File photo, String caption, int replyToMessageId) throws Exception {
+    protected Message sendPhoto(int chatId, File photo, int replyToMessageId, String caption) throws Exception {
         Map<String, Object> query = new HashMap<>();
         query.put("chat_id", chatId);
         query.put("reply_to_message_id", replyToMessageId);
@@ -213,12 +213,12 @@ public abstract class Bot {
      * Send photo as file id in reply to message
      * @param chatId Photo recipient
      * @param photoFileId File id on telegram server
-     * @param caption Caption text. Not sent when null
      * @param replyToMessageId Message id to reply
+     * @param caption Caption text. Not sent when null
      * @return Message sent to server
      * @throws Exception
      */
-    protected Message sendPhoto(int chatId, int photoFileId, String caption, int replyToMessageId) throws Exception {
+    protected Message sendPhoto(int chatId, int photoFileId, int replyToMessageId, String caption) throws Exception {
         Map<String, Object> query = new HashMap<>();
         query.put("chat_id", chatId);
         query.put("photo", photoFileId);
@@ -230,12 +230,100 @@ public abstract class Bot {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    //Send Audio
 
-    //TODO sendAudio
+    /**
+     * Send audio file
+     * @param chatId Recipient id
+     * @param audio Audio file
+     * @param title Track name. Not sent when null
+     * @param performer Performer. Not sent when null
+     * @return Message sent to server
+     */
+    protected Message sendAudio(int chatId, File audio, String title, String performer) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        if(title != null) {
+            query.put("title", title);
+        }
+        if(performer != null) {
+            query.put("performer", performer);
+        }
+        return sendFile(FileType.audio, query, audio);
+    }
+
+    /**
+     * Send audio file in reply to message
+     * @param chatId Recipient id
+     * @param audio Audio file
+     * @param replyToMessageId Message id to reply
+     * @param title Track name. Not sent when null
+     * @param performer Performer. Not sent when null
+     * @return Message sent to server
+     */
+    protected Message sendAudio(int chatId, File audio, int replyToMessageId, String title, String performer) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("reply_to_message_id", replyToMessageId);
+        if(title != null) {
+            query.put("title", title);
+        }
+        if(performer != null) {
+            query.put("performer", performer);
+        }
+        return sendFile(FileType.audio, query, audio);
+    }
+
+    /**
+     * Send audio file as file id
+     * @param chatId Recipient id
+     * @param audioFileId Audio file id on telegram server
+     * @param title Track name. Not sent when null
+     * @param performer Performer. Not sent when null
+     * @return Message sent to server
+     */
+    protected Message sendAudio(int chatId, int audioFileId, String title, String performer) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("audio", audioFileId);
+        if(title != null) {
+            query.put("title", title);
+        }
+        if(performer != null) {
+            query.put("performer", performer);
+        }
+        return sendFile(FileType.audio, query);
+    }
+
+    /**
+     * Send audio file as file id in reply to message
+     * @param chatId Recipient id
+     * @param audioFileId Audio file id on telegram server
+     * @param replyToMessageId Message id to reply
+     * @param title Track name. Not sent when null
+     * @param performer Performer. Not sent when null
+     * @return Message sent to server
+     */
+    protected Message sendAudio(int chatId, int audioFileId, int replyToMessageId, String title, String performer) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("audio", audioFileId);
+        query.put("reply_to_message_id", replyToMessageId);
+        if(title != null) {
+            query.put("title", title);
+        }
+        if(performer != null) {
+            query.put("performer", performer);
+        }
+        return sendFile(FileType.audio, query);
+    }
+
     //TODO sendDocument
     //TODO sendSticker
     //TODO sendVideo
     //TODO sendVoice
+
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Send location
