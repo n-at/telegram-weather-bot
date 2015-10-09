@@ -12,12 +12,14 @@ import ru.doublebyte.telegramWeatherBot.types.User;
 import ru.doublebyte.telegramWeatherBot.utils.Command;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 import ru.doublebyte.telegramWeatherBot.weatherTypes.CurrentWeather;
+import ru.doublebyte.telegramWeatherBot.weatherTypes.Forecast;
 import ru.doublebyte.telegramWeatherBot.weatherTypes.WeatherCondition;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * Weather bot class
@@ -65,6 +67,9 @@ public class WeatherBot extends Bot {
                 case "weather":
                     sendCurrentWeather(from, command);
                     break;
+                case "forecast":
+                    sendForecast(from, command);
+                    break;
                 case "help":
                     sendReply(from, messages.getString("help_weather"));
                     break;
@@ -73,6 +78,8 @@ public class WeatherBot extends Bot {
             }
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Send weather to user
@@ -90,52 +97,118 @@ public class WeatherBot extends Bot {
 
             CurrentWeather currentWeather = getCurrentWeather(city);
 
-            List<String> conditions = new ArrayList<>();
-            for(WeatherCondition condition: currentWeather.getWeatherCondition()) {
-                conditions.add(condition.getDescription());
-            }
-
             int temperature = (int)Math.round(currentWeather.getWeather().getTemperature());
             int humidity = currentWeather.getWeather().getHumidity();
             int pressure = (int)Math.round(currentWeather.getWeather().getPressure() * 0.75006375541921);
+            String conditions = getConditions(currentWeather.getWeatherCondition());
 
             String weather = String.format(messages.getString("current_weather_format"),
                     currentWeather.getCityName(),
-                    temperature, String.join(", ", conditions), humidity, pressure);
+                    temperature, conditions, humidity, pressure);
 
             sendReply(user, weather);
 
         } catch(Exception e) {
+            logger.error("Weather error", e);
             sendReply(user, messages.getString("weather_get_error"));
         }
     }
 
     /**
+     * Send forecast to user
+     * @param user User to send forecast
+     * @param command Command from user
+     */
+    private void sendForecast(User user, Command command) {
+        try {
+            String[] args = command.getArgs();
+            if(args.length == 0) {
+                sendReply(user, messages.getString("need_city_name"));
+                return;
+            }
+            String city = args[0];
+
+            Forecast forecast = getForecast(city);
+
+            List<String> forecastItems = new ArrayList<>();
+            for(CurrentWeather weather: forecast.getList()) {
+                int minTemp = (int)Math.round(weather.getWeather().getMinTemperature());
+                int maxTemp = (int)Math.round(weather.getWeather().getMaxTemperature());
+                String conditions = getConditions(weather.getWeatherCondition());
+                String forecastItem = String.format(messages.getString("forecast_item_format"),
+                        weather.getDateText(), minTemp, maxTemp, conditions);
+                forecastItems.add(forecastItem);
+            }
+
+            String forecastStr = String.format(messages.getString("forecast_format"),
+                    forecast.getCity().getName(), forecast.getCity().getCountry(), String.join("\n", forecastItems));
+
+            sendReply(user, forecastStr);
+        } catch (Exception e) {
+            logger.error("Forecast error", e);
+            sendReply(user, messages.getString("forecast_get_error"));
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
      * Get current weather
+     * @param city City to get
      * @return Current weather
      * @throws Exception
      */
     private CurrentWeather getCurrentWeather(String city) throws Exception {
         try {
-            HttpResponse<JsonNode> response = Unirest.get(weatherApiUrl)
-                    .routeParam("endpoint", "weather")
-                    .queryString("APPID", weatherApiKey)
-                    .queryString("lang", language)
-                    .queryString("units", units.toString())
-                    .queryString("q", city)
-                    .asJson();
-            JSONObject weatherObject = response.getBody().getObject();
+            JSONObject weatherObject = getWeatherObject("weather", city);
             CurrentWeather weather = JsonUtil.toObject(weatherObject, CurrentWeather.class);
-
             if(weather == null) {
                 throw new Exception("Cannot parse weather");
             }
-
             return weather;
         } catch(Exception e) {
             logger.error("Cannot get weather data", e);
             throw e;
         }
+    }
+
+    /**
+     * Get 5 day forecast
+     * @param city City to get
+     * @return Weather forecast
+     * @throws Exception
+     */
+    private Forecast getForecast(String city) throws Exception {
+        try {
+            JSONObject forecastObject = getWeatherObject("forecast", city);
+            Forecast forecast = JsonUtil.toObject(forecastObject, Forecast.class);
+            if(forecast == null) {
+                throw new Exception("Cannot parse forecast");
+            }
+            return forecast;
+        } catch(Exception e) {
+            logger.error("Cannot get forecast", e);
+            throw e;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Get weather object
+     * @param endpoint API endpoint
+     * @param city City to get
+     * @return Weather json object
+     */
+    private JSONObject getWeatherObject(String endpoint, String city) throws Exception {
+        HttpResponse<JsonNode> response = Unirest.get(weatherApiUrl)
+                .routeParam("endpoint", endpoint)
+                .queryString("APPID", weatherApiKey)
+                .queryString("lang", language)
+                .queryString("units", units.toString())
+                .queryString("q", city)
+                .asJson();
+        return response.getBody().getObject();
     }
 
     /**
@@ -147,8 +220,21 @@ public class WeatherBot extends Bot {
         try {
             sendMessage(user.getId(), message);
         } catch(Exception e) {
-            logger.error("Canot send reply to " + user.toString(), e);
+            logger.error("Cannot send reply to " + user.toString(), e);
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Collect conditions string
+     * @param conditions Conditions list
+     * @return Collected conditions
+     */
+    private String getConditions(List<WeatherCondition> conditions) {
+        return conditions.stream()
+                .map(WeatherCondition::getDescription)
+                .collect(Collectors.joining(", "));
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,9 @@ public class CurrentWeather {
     @JsonProperty("dt")
     private int date;
 
+    @JsonProperty("dt_txt")
+    private String dateText;
+
     @JsonProperty("name")
     private String cityName;
 
@@ -67,5 +70,13 @@ public class CurrentWeather {
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
+    }
+
+    public String getDateText() {
+        return dateText;
+    }
+
+    public void setDateText(String dateText) {
+        this.dateText = dateText;
     }
 }
