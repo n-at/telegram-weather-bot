@@ -12,7 +12,9 @@ import ru.doublebyte.telegramWeatherBot.types.User;
 import ru.doublebyte.telegramWeatherBot.utils.Command;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 import ru.doublebyte.telegramWeatherBot.weatherTypes.CurrentWeather;
+import ru.doublebyte.telegramWeatherBot.weatherTypes.WeatherCondition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -88,15 +90,18 @@ public class WeatherBot extends Bot {
 
             CurrentWeather currentWeather = getCurrentWeather(city);
 
-            //TODO more info, conditions
+            List<String> conditions = new ArrayList<>();
+            for(WeatherCondition condition: currentWeather.getWeatherCondition()) {
+                conditions.add(condition.getDescription());
+            }
 
             int temperature = (int)Math.round(currentWeather.getWeather().getTemperature());
+            int humidity = currentWeather.getWeather().getHumidity();
+            int pressure = (int)Math.round(currentWeather.getWeather().getPressure() * 0.75006375541921);
 
             String weather = String.format(messages.getString("current_weather_format"),
                     currentWeather.getCityName(),
-                    temperature,
-                    currentWeather.getWeather().getHumidity(),
-                    currentWeather.getWeather().getPressure());
+                    temperature, String.join(", ", conditions), humidity, pressure);
 
             sendReply(user, weather);
 
