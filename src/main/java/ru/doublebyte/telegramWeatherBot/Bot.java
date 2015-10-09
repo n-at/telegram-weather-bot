@@ -8,11 +8,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.telegramWeatherBot.enums.ChatAction;
+import ru.doublebyte.telegramWeatherBot.enums.FileType;
 import ru.doublebyte.telegramWeatherBot.enums.ParseMode;
 import ru.doublebyte.telegramWeatherBot.enums.RequestType;
 import ru.doublebyte.telegramWeatherBot.types.*;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,7 +152,85 @@ public abstract class Bot {
         return message;
     }
 
-    //TODO sendPhoto
+    ///////////////////////////////////////////////////////////////////////////
+    //Send Photo
+
+    /**
+     * Send photo file
+     * @param chatId Message recipient
+     * @param photo Photo file
+     * @param caption Caption text. Not sent when null
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendPhoto(int chatId, File photo, String caption) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.photo, query, photo);
+    }
+
+    /**
+     * Send photo file as reply to message
+     * @param chatId Message recipient
+     * @param photo Photo file
+     * @param caption Caption text. Not sent when null
+     * @param replyToMessageId Message id to reply
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendPhoto(int chatId, File photo, String caption, int replyToMessageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("reply_to_message_id", replyToMessageId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.photo, query, photo);
+    }
+
+    /**
+     * Send photo as file id
+     * @param chatId Photo recipient
+     * @param photoFileId File id on telegram server
+     * @param caption Caption text. Not sent when null
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendPhoto(int chatId, int photoFileId, String caption) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("photo", photoFileId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.photo, query);
+    }
+
+    /**
+     * Send photo as file id in reply to message
+     * @param chatId Photo recipient
+     * @param photoFileId File id on telegram server
+     * @param caption Caption text. Not sent when null
+     * @param replyToMessageId Message id to reply
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendPhoto(int chatId, int photoFileId, String caption, int replyToMessageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("photo", photoFileId);
+        query.put("reply_to_message_id", replyToMessageId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.photo, query);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+
     //TODO sendAudio
     //TODO sendDocument
     //TODO sendSticker
@@ -236,18 +316,18 @@ public abstract class Bot {
      * @param fileId File id
      * @return File download info
      */
-    protected File getFile(int fileId) throws Exception {
+    protected TelegramFile getFile(int fileId) throws Exception {
         Map<String, Object> query = new HashMap<>();
         query.put("file_id", fileId);
 
         JSONObject fileObject = makeRequest(RequestType.getFile, query);
-        File file = JsonUtil.toObject(fileObject, File.class);
+        TelegramFile telegramFile = JsonUtil.toObject(fileObject, TelegramFile.class);
 
-        if(file == null) {
+        if(telegramFile == null) {
             throw new Exception("Cannot parse file");
         }
 
-        return file;
+        return telegramFile;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -264,7 +344,6 @@ public abstract class Bot {
                     .routeParam("request", requestType.toString())
                     .queryString(parameters)
                     .asJson();
-
             JSONObject result = response.getBody().getObject();
 
             boolean ok = result.getBoolean("ok");
@@ -302,7 +381,6 @@ public abstract class Bot {
                     .queryString("limit", limit)
                     .queryString("timeout", timeout)
                     .asJson();
-
             JSONObject result = response.getBody().getObject();
 
             boolean ok = result.getBoolean("ok");
@@ -387,6 +465,59 @@ public abstract class Bot {
         }
 
         return photos;
+    }
+
+    /**
+     * Send file to server
+     * @param fileType File type
+     * @param query Query parameters
+     * @param file File to send
+     * @return Message sent to server
+     */
+    private Message sendFile(FileType fileType, Map<String, Object> query, File file) throws Exception {
+        try {
+            HttpResponse<JsonNode> response = Unirest.post(apiUrl)
+                    .routeParam("token", token)
+                    .routeParam("request", fileType.getRequestType().toString())
+                    .queryString(query)
+                    .field(fileType.toString(), file)
+                    .asJson();
+            JSONObject result = response.getBody().getObject();
+
+            boolean ok = result.getBoolean("ok");
+            if(!ok) {
+                String description = result.getString("description");
+                throw new Exception("Telegram API error: " + description);
+            }
+
+            JSONObject messageObject = result.getJSONObject("result");
+            Message message = JsonUtil.toObject(messageObject, Message.class);
+            if(message == null) {
+                throw new Exception("Cannot parse message");
+            }
+
+            return message;
+        } catch(Exception e) {
+            logger.error("Failed to make request: " + fileType.getRequestType());
+            throw e;
+        }
+    }
+
+    /**
+     * Send file to server. File is sent by id in query
+     * @param fileType File type
+     * @param query Query parameters
+     * @return Message sent to server
+     */
+    private Message sendFile(FileType fileType, Map<String, Object> query) throws Exception {
+        JSONObject messageObject = makeRequest(fileType.getRequestType(), query);
+        Message message = JsonUtil.toObject(messageObject, Message.class);
+
+        if(message == null) {
+            throw new Exception("Cannot parse message while sending " + fileType.toString());
+        }
+
+        return message;
     }
 
     ///////////////////////////////////////////////////////////////////////////

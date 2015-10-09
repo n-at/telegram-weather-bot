@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This object represents a file ready to be downloaded
  * https://core.telegram.org/bots/api#file
  */
-public class File {
+public class TelegramFile {
 
     @JsonProperty("file_id")
     private String fileId;
@@ -17,7 +17,7 @@ public class File {
     @JsonProperty("file_path")
     private String filePath;
 
-    public File() {
+    public TelegramFile() {
 
     }
 
