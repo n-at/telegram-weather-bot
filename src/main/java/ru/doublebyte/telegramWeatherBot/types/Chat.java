@@ -3,13 +3,16 @@ package ru.doublebyte.telegramWeatherBot.types;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Object that can be User or GroupChat
- * Used in Message class
+ * This object represents a chat
+ * https://core.telegram.org/bots/api#chat
  */
-public class UserOrChat {
+public class Chat {
 
     @JsonProperty("id")
     private int id;
+
+    @JsonProperty("type")
+    private String type;
 
     @JsonProperty("title")
     private String title;
@@ -23,10 +26,7 @@ public class UserOrChat {
     @JsonProperty("username")
     private String userName;
 
-    @JsonProperty("type")
-    private String type;
-
-    public UserOrChat() {
+    public Chat() {
 
     }
 
@@ -52,14 +52,6 @@ public class UserOrChat {
         chat.setId(id);
         chat.setTitle(title);
         return chat;
-    }
-
-    public boolean isChat() {
-        return title != null;
-    }
-
-    public boolean isUser() {
-        return firstName != null;
     }
 
     ///////////////////////////////////////////////////////////////////////////

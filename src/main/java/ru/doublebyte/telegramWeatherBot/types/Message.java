@@ -20,7 +20,7 @@ public class Message {
     private int date;
 
     @JsonProperty("chat")
-    private UserOrChat chat;
+    private Chat chat;
 
     @JsonProperty("forward_from")
     private User forwardFrom;
@@ -108,11 +108,11 @@ public class Message {
         this.date = date;
     }
 
-    public UserOrChat getChat() {
+    public Chat getChat() {
         return chat;
     }
 
-    public void setChat(UserOrChat chat) {
+    public void setChat(Chat chat) {
         this.chat = chat;
     }
 
