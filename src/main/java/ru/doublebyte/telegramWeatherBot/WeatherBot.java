@@ -14,6 +14,8 @@ import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 import ru.doublebyte.telegramWeatherBot.weatherTypes.CurrentWeather;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Weather bot class
@@ -27,6 +29,11 @@ public class WeatherBot extends Bot {
     private WeatherUnits units = WeatherUnits.metric;
 
     private final String weatherApiUrl = "http://api.openweathermap.org/data/2.5/{endpoint}";
+    private final String messagesBundleName = "weatherBot.messages";
+
+    private ResourceBundle messages = ResourceBundle.getBundle(messagesBundleName, Locale.ENGLISH);
+
+    ///////////////////////////////////////////////////////////////////////////
 
     public WeatherBot(String token, String weatherApiKey) {
         super(token);
@@ -48,7 +55,7 @@ public class WeatherBot extends Bot {
             try {
                 command = new Command(message.getText());
             } catch(Exception e) {
-                sendReply(from, "This is not a command :(");
+                sendReply(from, messages.getString("not_a_command"));
                 continue;
             }
 
@@ -57,10 +64,10 @@ public class WeatherBot extends Bot {
                     sendCurrentWeather(from, command);
                     break;
                 case "help":
-                    sendReply(from, "/weather <city,country> - Current weather for city");
+                    sendReply(from, messages.getString("help_weather"));
                     break;
                 default:
-                    sendReply(from, "Unknown command :(");
+                    sendReply(from, messages.getString("unknown_command"));
             }
         }
     }
@@ -74,7 +81,7 @@ public class WeatherBot extends Bot {
         try {
             String[] args = command.getArgs();
             if(args.length == 0) {
-                sendReply(user, "Provide city name!");
+                sendReply(user, messages.getString("need_city_name"));
                 return;
             }
             String city = args[0];
@@ -83,13 +90,9 @@ public class WeatherBot extends Bot {
 
             //TODO more info, conditions
 
-            String format = "Now in city \"%s\" is %d °C\n" +
-                            "Humidity: %d%%\n" +
-                            "Pressure: %d hpa";
-
             int temperature = (int)Math.round(currentWeather.getWeather().getTemperature());
 
-            String weather = String.format(format,
+            String weather = String.format(messages.getString("current_weather_format"),
                     currentWeather.getCityName(),
                     temperature,
                     currentWeather.getWeather().getHumidity(),
@@ -98,7 +101,7 @@ public class WeatherBot extends Bot {
             sendReply(user, weather);
 
         } catch(Exception e) {
-            sendReply(user, "Failed to get weather :(");
+            sendReply(user, messages.getString("weather_get_error"));
         }
     }
 
@@ -159,6 +162,7 @@ public class WeatherBot extends Bot {
 
     public void setLanguage(String language) {
         this.language = language;
+        messages = ResourceBundle.getBundle(messagesBundleName, new Locale(language));
     }
 
     public WeatherUnits getUnits() {
