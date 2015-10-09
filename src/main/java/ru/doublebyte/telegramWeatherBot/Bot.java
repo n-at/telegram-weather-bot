@@ -318,7 +318,67 @@ public abstract class Bot {
         return sendFile(FileType.audio, query);
     }
 
-    //TODO sendDocument
+    ///////////////////////////////////////////////////////////////////////////
+    //Send Document
+
+    /**
+     * Send document
+     * @param chatId Recipient id
+     * @param document File to send
+     * @return Message send to server
+     * @throws Exception
+     */
+    protected Message sendDocument(int chatId, File document) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        return sendFile(FileType.document, query, document);
+    }
+
+    /**
+     * Send document in reply to message
+     * @param chatId Recipient id
+     * @param document File to send
+     * @param replyToMessageId Message id to reply
+     * @return Message send to server
+     * @throws Exception
+     */
+    protected Message sendDocument(int chatId, File document, int replyToMessageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("reply_to_message_id", replyToMessageId);
+        return sendFile(FileType.document, query, document);
+    }
+
+    /**
+     * Send document as file id
+     * @param chatId Recipient id
+     * @param documentFileId File id on telegram server
+     * @return Message send to server
+     * @throws Exception
+     */
+    protected Message sendDocument(int chatId, int documentFileId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("document", documentFileId);
+        return sendFile(FileType.document, query);
+    }
+
+    /**
+     * Send document as file id in reply to message
+     * @param chatId Recipient id
+     * @param documentFileId File id on telegram server
+     * @param replyToMessageId Message id to reply
+     * @return Message send to server
+     * @throws Exception
+     */
+    protected Message sendDocument(int chatId, int documentFileId, int replyToMessageId) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("document", documentFileId);
+        query.put("reply_to_message_id", replyToMessageId);
+        return sendFile(FileType.document, query);
+    }
+
     //TODO sendSticker
     //TODO sendVideo
     //TODO sendVoice

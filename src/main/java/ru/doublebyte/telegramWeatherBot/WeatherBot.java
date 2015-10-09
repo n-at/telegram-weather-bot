@@ -13,7 +13,6 @@ import ru.doublebyte.telegramWeatherBot.utils.Command;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 import ru.doublebyte.telegramWeatherBot.weatherTypes.CurrentWeather;
 
-import java.io.File;
 import java.util.List;
 
 /**
