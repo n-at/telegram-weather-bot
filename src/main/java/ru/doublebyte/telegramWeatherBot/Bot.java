@@ -379,9 +379,82 @@ public abstract class Bot {
         return sendFile(FileType.document, query);
     }
 
-    //TODO sendSticker
-    //TODO sendVideo
-    //TODO sendVoice
+    ///////////////////////////////////////////////////////////////////////////
+    //Send Video
+
+    /**
+     * Send video
+     * @param chatId Recipient id
+     * @param video Video file
+     * @param caption Video caption. Not sent when null
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendVideo(int chatId, File video, String caption) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.video, query, video);
+    }
+
+    /**
+     * Send video in reply to message
+     * @param chatId Recipient id
+     * @param video Video file
+     * @param replyToMessageId Message id to reply
+     * @param caption Video caption. Not sent when null
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendVideo(int chatId, File video, int replyToMessageId, String caption) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("reply_to_message_id", replyToMessageId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.video, query, video);
+    }
+
+    /**
+     * Send video as file id
+     * @param chatId Recipient id
+     * @param videoFileId Video file id on telegram server
+     * @param caption Video caption. Not sent when null
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendVideo(int chatId, int videoFileId, String caption) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("video", videoFileId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.video, query);
+    }
+
+    /**
+     * Send video as file id in reply to message
+     * @param chatId Recipient id
+     * @param videoFileId Video file id on telegram server
+     * @param replyToMessageId Message id to reply
+     * @param caption Video caption. Not sent when null
+     * @return Message sent to server
+     * @throws Exception
+     */
+    protected Message sendVideo(int chatId, int videoFileId, int replyToMessageId, String caption) throws Exception {
+        Map<String, Object> query = new HashMap<>();
+        query.put("chat_id", chatId);
+        query.put("video", videoFileId);
+        query.put("reply_to_message_id", replyToMessageId);
+        if(caption != null) {
+            query.put("caption", caption);
+        }
+        return sendFile(FileType.video, query);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 
