@@ -7,8 +7,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.doublebyte.telegramWeatherBot.enums.WeatherUnits;
+import ru.doublebyte.telegramWeatherBot.types.Chat;
 import ru.doublebyte.telegramWeatherBot.types.Message;
-import ru.doublebyte.telegramWeatherBot.types.User;
 import ru.doublebyte.telegramWeatherBot.utils.Command;
 import ru.doublebyte.telegramWeatherBot.utils.JsonUtil;
 import ru.doublebyte.telegramWeatherBot.weatherTypes.CurrentWeather;
@@ -53,28 +53,31 @@ public class WeatherBot extends Bot {
         List<Message> updates = getUpdates();
 
         for(Message message: updates) {
-            User from = message.getFrom();
+            Chat chat = message.getChat();
             Command command;
 
             try {
                 command = new Command(message.getText());
             } catch(Exception e) {
-                sendReply(from, messages.getString("not_a_command"));
+                sendReply(chat, messages.getString("not_a_command"));
                 continue;
             }
 
             switch(command.getCommand()) {
                 case "weather":
-                    sendCurrentWeather(from, command);
+                    sendCurrentWeather(chat, command);
                     break;
                 case "forecast":
-                    sendForecast(from, command);
+                    sendForecast(chat, command);
                     break;
                 case "help":
-                    sendReply(from, messages.getString("help_weather"));
+                    sendReply(chat, messages.getString("help_weather"));
+                    break;
+                case "start":
+                    sendReply(chat, messages.getString("start_message"));
                     break;
                 default:
-                    sendReply(from, messages.getString("unknown_command"));
+                    sendReply(chat, messages.getString("unknown_command"));
             }
         }
     }
@@ -82,15 +85,15 @@ public class WeatherBot extends Bot {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Send weather to user
-     * @param user User
+     * Send weather to chat
+     * @param chat Chat to send weather
      * @param command Command from user
      */
-    private void sendCurrentWeather(User user, Command command) {
+    private void sendCurrentWeather(Chat chat, Command command) {
         try {
             String[] args = command.getArgs();
             if(args.length == 0) {
-                sendReply(user, messages.getString("need_city_name"));
+                sendReply(chat, messages.getString("need_city_name"));
                 return;
             }
             String city = args[0];
@@ -106,24 +109,24 @@ public class WeatherBot extends Bot {
                     currentWeather.getCityName(),
                     temperature, conditions, humidity, pressure);
 
-            sendReply(user, weather);
+            sendReply(chat, weather);
 
         } catch(Exception e) {
             logger.error("Weather error", e);
-            sendReply(user, messages.getString("weather_get_error"));
+            sendReply(chat, messages.getString("weather_get_error"));
         }
     }
 
     /**
-     * Send forecast to user
-     * @param user User to send forecast
+     * Send forecast to chat
+     * @param chat Chat to send forecast
      * @param command Command from user
      */
-    private void sendForecast(User user, Command command) {
+    private void sendForecast(Chat chat, Command command) {
         try {
             String[] args = command.getArgs();
             if(args.length == 0) {
-                sendReply(user, messages.getString("need_city_name"));
+                sendReply(chat, messages.getString("need_city_name"));
                 return;
             }
             String city = args[0];
@@ -143,10 +146,10 @@ public class WeatherBot extends Bot {
             String forecastStr = String.format(messages.getString("forecast_format"),
                     forecast.getCity().getName(), forecast.getCity().getCountry(), String.join("\n", forecastItems));
 
-            sendReply(user, forecastStr);
+            sendReply(chat, forecastStr);
         } catch (Exception e) {
             logger.error("Forecast error", e);
-            sendReply(user, messages.getString("forecast_get_error"));
+            sendReply(chat, messages.getString("forecast_get_error"));
         }
     }
 
@@ -213,14 +216,14 @@ public class WeatherBot extends Bot {
 
     /**
      * Send reply message to user without throwing an exception
-     * @param user User
+     * @param chat Chat to send message
      * @param message Message
      */
-    private void sendReply(User user, String message) {
+    private void sendReply(Chat chat, String message) {
         try {
-            sendMessage(user.getId(), message);
+            sendMessage(chat.getId(), message);
         } catch(Exception e) {
-            logger.error("Cannot send reply to " + user.toString(), e);
+            logger.error("Cannot send reply to " + chat.toString(), e);
         }
     }
 
