@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a voice note
  * https://core.telegram.org/bots/api#voice
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Voice {
 
     @JsonProperty("file_id")

@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a general file (as opposed to photos, voice messages and audio files)
  * https://core.telegram.org/bots/api#document
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Document {
 
     @JsonProperty("file_id")

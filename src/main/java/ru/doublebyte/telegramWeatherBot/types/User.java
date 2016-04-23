@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User type
  * https://core.telegram.org/bots/api#user
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @JsonProperty("id")

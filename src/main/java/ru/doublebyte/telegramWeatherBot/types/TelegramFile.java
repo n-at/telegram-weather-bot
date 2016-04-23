@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a file ready to be downloaded
  * https://core.telegram.org/bots/api#file
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TelegramFile {
 
     @JsonProperty("file_id")

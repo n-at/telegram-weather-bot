@@ -8,9 +8,9 @@ Weather data provided by [OpenWeatherMap](http://openweathermap.org/).
 Building
 --------
 
-Java >= 8 and maven >= 3 required.
+JDK >= 1.8 and maven >= 3 required.
 
-    mvn clean compile assembly:single
+    mvn clean compile package
     
 Testing
 -------
@@ -20,4 +20,9 @@ Testing
 Running
 -------
 
-    java -Djava.awt.headless=true -jar telegram-weather-bot-1.0-jar-with-dependencies.jar
+    java -Djava.awt.headless=true -jar telegram-weather-bot.jar
+
+License
+-------
+
+BSD

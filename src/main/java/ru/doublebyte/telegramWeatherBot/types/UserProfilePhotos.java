@@ -1,5 +1,6 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
  * This object represent a user's profile pictures
  * https://core.telegram.org/bots/api#userprofilephotos
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserProfilePhotos {
 
     @JsonProperty("total_count")

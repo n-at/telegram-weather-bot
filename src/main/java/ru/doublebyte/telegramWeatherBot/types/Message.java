@@ -1,5 +1,6 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
  * Message class
  * https://core.telegram.org/bots/api#message
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {
 
     @JsonProperty("message_id")

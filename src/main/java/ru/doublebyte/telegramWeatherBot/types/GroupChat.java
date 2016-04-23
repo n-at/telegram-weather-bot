@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a group chat
  * https://core.telegram.org/bots/api#groupchat
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupChat {
 
     @JsonProperty("id")

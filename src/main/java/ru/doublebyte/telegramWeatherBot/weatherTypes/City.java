@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * City
  */
-@JsonIgnoreProperties({"sys", "population"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class City {
 
     @JsonProperty("id")

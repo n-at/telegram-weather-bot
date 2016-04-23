@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Weather forecast
  */
-@JsonIgnoreProperties({"code", "message", "cnt", "cod"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Forecast {
 
     @JsonProperty("city")

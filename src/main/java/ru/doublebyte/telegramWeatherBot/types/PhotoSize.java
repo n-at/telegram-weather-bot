@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents one size of a photo or a file / sticker thumbnail
  * https://core.telegram.org/bots/api#photosize
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PhotoSize {
 
     @JsonProperty("file_id")

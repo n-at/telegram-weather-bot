@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents an audio file to be treated as music by the Telegram clients
  * https://core.telegram.org/bots/api#audio
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Audio {
 
     @JsonProperty("file_id")

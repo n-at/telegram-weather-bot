@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents an incoming update
  * https://core.telegram.org/bots/api#update
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Update {
 
     @JsonProperty("update_id")

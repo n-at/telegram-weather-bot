@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a sticker
  * https://core.telegram.org/bots/api#sticker
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Sticker {
 
     @JsonProperty("file_id")

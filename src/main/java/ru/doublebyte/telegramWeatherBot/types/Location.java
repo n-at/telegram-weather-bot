@@ -1,11 +1,13 @@
 package ru.doublebyte.telegramWeatherBot.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a point on the map
  * https://core.telegram.org/bots/api#location
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Location {
 
     @JsonProperty("longitude")

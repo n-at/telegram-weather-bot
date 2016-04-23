@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-@JsonIgnoreProperties({"visibility", "rain", "snow", "clouds", "wind", "sys", "base", "id", "cod"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CurrentWeather {
 
     @JsonProperty("coord")
