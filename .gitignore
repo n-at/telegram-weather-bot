@@ -2,4 +2,4 @@
 target/
 
 *.iml
-bot.properties
+application.properties

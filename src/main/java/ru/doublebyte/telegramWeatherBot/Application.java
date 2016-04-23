@@ -1,31 +1,25 @@
 package ru.doublebyte.telegramWeatherBot;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
+@SpringBootApplication
+@EnableScheduling
 public class Application {
 
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
-
     public static void main(String[] args) {
-        BotProperties properties = BotProperties.getInstance();
-        WeatherBot bot = new WeatherBot(properties.getTelegramBotToken(),
-                properties.getOpenWeatherMapApiKey());
+        SpringApplication.run(Application.class, args);
+    }
 
-        bot.setLanguage(properties.getLanguage());
-        bot.setUnits(properties.getUnits());
+    @Autowired
+    private WeatherBot weatherBot;
 
-        while(true) {
-
-            bot.handleRequests();
-
-            try {
-                Thread.sleep(properties.getPollInterval());
-            } catch(InterruptedException e) {
-                logger.error("Bot thread interrupted", e);
-                break;
-            }
-        }
+    @Scheduled(fixedDelayString = "${bot.poll_interval}")
+    public void update() {
+        weatherBot.handleRequests();
     }
 
 }
