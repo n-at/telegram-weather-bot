@@ -33,7 +33,7 @@ public abstract class Bot {
     /**
      * Maximum update id. Used for getUpdates
      */
-    private int maxUpdateId = 0;
+    private long maxUpdateId = 0;
 
     /**
      * Maximum number of messages loaded with getUpdates
@@ -593,7 +593,7 @@ public abstract class Bot {
      * Get updates from Telegram
      * @return Array of updates
      */
-    private List<Message> getUpdates(int offset, int limit, int timeout) {
+    private List<Message> getUpdates(long offset, int limit, int timeout) {
         try {
             HttpResponse<JsonNode> response = Unirest.get(apiUrl)
                     .routeParam("token", token)

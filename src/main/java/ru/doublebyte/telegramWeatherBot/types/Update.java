@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Update {
 
     @JsonProperty("update_id")
-    private int updateId;
+    private long updateId;
 
     @JsonProperty("message")
     private Message message;
@@ -22,7 +22,7 @@ public class Update {
 
     ///////////////////////////////////////////////////////////////////////////
 
-    public int getUpdateId() {
+    public long getUpdateId() {
         return updateId;
     }
 
