@@ -59,7 +59,7 @@ public class WeatherBot extends Bot {
             try {
                 command = new Command(message.getText());
             } catch(Exception e) {
-                sendReply(chat, messages.getString("not_a_command"));
+                sendCurrentWeather(chat, message.getText());
                 continue;
             }
 
@@ -96,8 +96,20 @@ public class WeatherBot extends Bot {
                 sendReply(chat, messages.getString("need_city_name"));
                 return;
             }
-            String city = args[0];
+            sendCurrentWeather(chat, args[0]);
+        } catch(Exception e) {
+            logger.error("Weather error", e);
+            sendReply(chat, messages.getString("weather_get_error"));
+        }
+    }
 
+    /**
+     * Send weather in city to chat
+     * @param chat Chat
+     * @param city City name
+     */
+    private void sendCurrentWeather(Chat chat, String city) {
+        try {
             CurrentWeather currentWeather = getCurrentWeather(city);
 
             int temperature = (int)Math.round(currentWeather.getWeather().getTemperature());
@@ -110,7 +122,6 @@ public class WeatherBot extends Bot {
                     temperature, conditions, humidity, pressure);
 
             sendReply(chat, weather);
-
         } catch(Exception e) {
             logger.error("Weather error", e);
             sendReply(chat, messages.getString("weather_get_error"));
